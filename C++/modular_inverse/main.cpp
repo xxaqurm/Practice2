@@ -1,41 +1,79 @@
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
-int modinv(int c, int m) {
-    int m0 = m;
-    int u0 = 1, u1 = 0;
-    int v0 = 0, v1 = 1;
+int gcd(int a, int b) {
+    /* Находит НОД чисел a и b */
+    int bestGcd = 0;
+    int smollerElm = a < b ? a : b;
+    for (int i = 1; i <= (int)sqrt(smollerElm); i++) {
+        if (a % i == 0 && b % i == 0) {
+            bestGcd = i > bestGcd ? i : bestGcd;
+        }
+        if (a % (a / i) == 0 && b % (a / i) == 0 && (a / i) * i == a) {
+            bestGcd = (a / i) > bestGcd ? (a / i) : bestGcd;
+        }
+        if (a % (b / i) == 0 && b % (b / i) == 0 && (b / i) * i == b) {
+            bestGcd = (b / i) > bestGcd ? (b / i) : bestGcd;
+        }
+    }
+    return bestGcd;
+}
 
-    while (m != 0) {
-        int q = c / m;
-        int temp = c % m;
-        c = m;
-        m = temp;
+int reverse_gcd(int a, int m){
+    tuple<int, int> x = {m, 0};
+    tuple<int, int> y = {a, 1};
 
-        int tmp_u = u0 - q * u1;
-        u0 = u1;
-        u1 = tmp_u;
+    int q = 0;
+    tuple<int, int> t;
+    while (get<0>(y) > 0){
+        q = get<0>(x) / get<0>(y);
+        t = {get<0>(x) % get<0>(y), get<1>(x) - q * get<1>(y)};
+        x = y;
+        y = t;
+    }
+    int u = get<1>(x);
 
-        int tmp_v = v0 - q * v1;
-        v0 = v1;
-        v1 = tmp_v;
+    return (u % m + m) % m;
+}
+
+tuple<int, int, int> extend_gcd(int a, int b){
+    tuple<int, int, int> x = {a, 1, 0};
+    tuple<int , int ,int> y =  {b, 0, 1};
+
+    int q = 0;
+    tuple<int, int, int> t;
+    while(get<0>(y) != 0){
+        q = get<0>(x) / get<0>(y);
+        t = {get<0>(x) % get<0>(y), get<1>(x) - q * get<1>(y), get<2>(x) - q * get<2>(y)};
+        x = y;
+        y = t;
     }
 
-    if (c != 1) {
-        throw std::invalid_argument("Обратного элемента не существует (НОД != 1)");
+    return x;
+}
+
+int findD(int c, int m){
+    if (gcd(c, m) != 1){
+        cout << "Wrong numbers" << endl;
+        return 0;
     }
 
-    return (u0 % m0 + m0) % m0;
+    tuple<int, int, int> evk = extend_gcd(c, m);
+
+    int u = get<1>(evk);
+    return ((u % m) + m) % m;
 }
 
 int main() {
-    try {
-        int c = 3;
-        int m = 11;
-        int inverse = modinv(c, m);
-        cout << "modinv (" << c << ", " << m << ") = " << inverse << endl;
-    } catch(const invalid_argument& e) {
-        cout << "Ошибка: " << e.what() << endl;
-    }
+    int c = 0;
+    int m = 0;
+
+    cout << "Enter your c, m (expl: c m): ";
+    cin >> c >> m;
+
+    int d = findD(c, m);
+    cout << "Result: " << d;
 }

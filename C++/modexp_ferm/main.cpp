@@ -5,7 +5,7 @@ using namespace std;
 
 bool is_prime(int a) {
     /* Проверяет число на простоту */
-    for (int i = 2; i < (int)sqrt(a); i++) {
+    for (int i = 2; i <= (int)sqrt(a); i++) {
         if (a % i == 0) {
             return false;
         }
@@ -22,7 +22,7 @@ int fermat_mod(int a, int x, int p) {
             result = (result * base) % p;
         }
         base = (base * base) % p;
-        x /= 2;
+        x >>= 1;
     }
     return result;
 }
