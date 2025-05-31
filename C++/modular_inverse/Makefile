@@ -1,7 +1,25 @@
-all: program.out
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
 
-program.out: main.cpp
-	g++ main.cpp -o program.out
+SRC_DIR = src
+OBJ_DIR = build
+BIN = program.out
+
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
+
+all: $(BIN)
+
+$(BIN): $(OBJS)
+	$(CXX) $(OBJS) -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 clean:
-	rm -f program.out
+	rm -rf $(OBJ_DIR) $(BIN)
+
+.PHONY: all clean
