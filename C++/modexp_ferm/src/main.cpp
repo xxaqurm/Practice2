@@ -22,7 +22,7 @@ int main() {
             break;
         } catch (const exception& e) {
             cout << "Ошибка. " << e.what();
-        } catch (const const ios_base::failure& e) {
+        } catch (const ios_base::failure& e) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Ошибка (" << e.what() << "). Введите 2 целых числа: ";
