@@ -1,7 +1,4 @@
-#include <tuple>
 #include "math_utils.h"
-
-using namespace std;
 
 int find_gcd(int a, int b) {
     /* Находит НОД(a, b) */
@@ -29,9 +26,12 @@ tuple<int, int, int> extended_gcd(int a, int b) {
 }
 
 int mod_inverse(int c, int m) {
+    /* Находит обратный элемент к "c" по модолю "m" */
     int gcd, u, v;
     tie(gcd, u, v) = extended_gcd(c, m);
 
-    u = u < 0 ? u + m : u;
+    if (u < 0) {
+        u += m;
+    }
     return u;
 }

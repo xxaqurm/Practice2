@@ -1,7 +1,7 @@
-#include "math_utils.h"
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
+#include <limits>
 #include <tuple>
 #include <cmath>
 
@@ -49,11 +49,29 @@ vector<int> continuedFraction(int a, int b) {
 
 void printContinuedFraction(vector<int> cf) {
     /* Выводит цепную дробь */
-    cout << "[";
+    wcout << L"[";
     for (size_t i = 0; i < cf.size(); i++) {
-        cout << cf[i];
-        if (i == 0 && cf.size() > 0) cout << "; ";
-        else if (i < cf.size() - 1) cout << ", ";
+        wcout << cf[i];
+        if (i == 0 && cf.size() > 0) wcout << L"; ";
+        else if (i < cf.size() - 1) wcout << L", ";
     }
-    cout << "]" << endl;
+    wcout << L"]" << endl;
+}
+
+void solve_dioph() {
+    int a = 275, b = 145, d = 10;
+    int x = 0, y = 0;
+
+    try {
+        solveDiophantine(a, b, d, x, y);
+        wcout << L"Решение уравнения: " << a << L"*x + " << b << L"*y = " << d << ":\n";
+        wcout << L"x = " << x << L"\ny = " << y << endl;
+    } catch(const exception& e) {
+        wcout << L"Ошибка: " << e.what();
+    }
+
+    wcout << L"\nЦепная дробь для " << a << L" / " << b << L":" << endl;
+    vector<int> contFraction = continuedFraction(a, b);
+    printContinuedFraction(contFraction);
+    wcout << endl;
 }
