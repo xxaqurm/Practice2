@@ -1,3 +1,3 @@
-#pragma once
+    #pragma once
 
-bool is_prime(int a);
+    bool is_prime(int a);

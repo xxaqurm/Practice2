@@ -20,17 +20,15 @@ int main() {
                 throw runtime_error("p должно быть простым. Попробуйте еще раз: ");
             }
             break;
-        } catch (const exception& e) {
-            cout << "Ошибка. " << e.what();
         } catch (const ios_base::failure& e) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Ошибка (" << e.what() << "). Введите 2 целых числа: ";
+        } catch (const exception& e) {
+            cout << "Ошибка. " << e.what();
         }
     }
 
     int mod_result = fermat_mod(a, x, p);
     cout << "a^x mod p = " << mod_result << endl;
-
-    return 0;
 }

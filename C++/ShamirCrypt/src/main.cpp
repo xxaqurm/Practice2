@@ -74,10 +74,23 @@ int main() {
             break;
         }
     }
+    wcout << endl;
     
-    wcout << L"Введите кол-во частей (k) для расшифровки: ";
-    uint64_t userK = 3;
-    wcin >> userK;
+    int userK = 3;
+    while (true) {
+        try {
+            wcout << L"Введите кол-во частей (k) для расшифровки: ";
+            wcin >> userK;
+            if (userK > n) {
+                throw runtime_error("user_k can't be more than n");
+            }
+            break;
+        } catch (const exception& e) {
+            wcout << L"Ошибка (" << e.what() << L"). Попробуйте еще раз.\n";
+            wcin.clear();
+            wcin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
     
     for (auto& symb : encrypted) {
         text += (wchar_t)reconstruct_secret(symb, PRIME, userK);
