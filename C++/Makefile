@@ -1,13 +1,10 @@
-# Пути
 SRC_DIR = src
 BUILD_DIR = build
 INCLUDE_DIR = include
 
-# Компилятор и флаги
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -I$(INCLUDE_DIR)
 
-# Файлы
 OBJS = \
   $(BUILD_DIR)/main.o \
   $(BUILD_DIR)/math_utils.o \
@@ -17,7 +14,6 @@ OBJS = \
   $(BUILD_DIR)/shamir.o \
   $(BUILD_DIR)/solveDiophantine.o
 
-# Правила
 program.out: $(OBJS)
 	$(CXX) $(OBJS) -o $@
 

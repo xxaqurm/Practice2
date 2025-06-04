@@ -17,7 +17,7 @@ int main() {
             try {
                 wcout << L"Выбирите одну из следующих програм:" << endl;
                 wcout << L"1. Находит значение выражения a^x mod p" << endl;
-                wcout << L"2. Находит значение d выражения (c*d) mod m" << endl;
+                wcout << L"2. Находит значение d выражения (c*d) mod m (через u v)" << endl;
                 wcout << L"3. Находит значение c выражения c^(-1) mod m = d" << endl;
                 wcout << L"4. Шифрует вашу строку при помощи алгоритма Шамира" << endl;
                 wcout << L"5. Реашет уравнение 275a + 145b = 10, а также находит цепную дробь выражения 275 / 145" << endl;
@@ -42,30 +42,30 @@ int main() {
             }
         }
 
-        switch (programNumber) {
-            case 0:
+        Tasks task = (Tasks)programNumber;  
+        switch (task) {
+            case Tasks::ExitProgram:
                 exitProgram = true;
                 break;
-            case 1:
+            case Tasks::Fermat:
                 modexp();
                 break;
-            case 2:
+            case Tasks::Euclid_uv:
                 mod_inverse1();
                 break;
-            case 3:
+            case Tasks::Euclid:
                 mod_inverse2();
                 break;
-            case 4:
+            case Tasks::Shamir:
                 shamir();
                 break;
-            case 5:
+            case Tasks::Equation:
                 solve_dioph();
                 break;
             default:
                 wcout << L"ERROR" << endl;
                 break;
         }
-
         wcin.clear();
         wcin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
