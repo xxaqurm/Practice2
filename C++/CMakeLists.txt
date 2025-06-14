@@ -28,11 +28,10 @@ find_library(GMPXX_LIBRARY NAMES gmpxx
 include_directories(include ${GMP_INCLUDE_DIR})
 set(SOURCE_DIR src)
 
-# Список исходных файлов
 set(SOURCES
     ${SOURCE_DIR}/main.cpp
-    ${SOURCE_DIR}/math_utils.cpp
-    ${SOURCE_DIR}/menu_utils.cpp
+    ${SOURCE_DIR}/utils/math_utils.cpp
+    ${SOURCE_DIR}/utils/menu_utils.cpp
     ${SOURCE_DIR}/algorithms/mod_inverse1.cpp
     ${SOURCE_DIR}/algorithms/mod_inverse2.cpp
     ${SOURCE_DIR}/algorithms/modexp.cpp

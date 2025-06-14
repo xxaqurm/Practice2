@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include <fstream>
 
 #include "menu_utils.hpp"
 #include "math_utils.hpp"
@@ -7,8 +8,9 @@
 
 using namespace std;
 
-void showUserMenu() {
+void showUserMenu(int& mode) {
     /* Выводит пользовательское меню */
+    
     cout << "Выбирите одну из следующих програм:" << endl;
     cout << "0. Выход из программы" << endl;
     cout << "1. Находит значение выражения a^x mod p" << endl;
@@ -19,8 +21,8 @@ void showUserMenu() {
     cout << "Выберите одну из задач: ";
 }
 
-void userInputError(const exception& e) {
-    cout << ">>> Ошибка (" << e.what() << "): Введите число от 0 до 5. Попробуйте еще раз: ";
+void userInputError(const exception& e, string& errorText) {
+    cout << ">>> Ошибка (" << e.what() << "): " << errorText << endl;
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
@@ -59,7 +61,7 @@ int getProgramChoice() {
     while (true) {
         try {
             showUserMenu();
-            wcin >> choice;
+            cin >> choice;
 
             if (choice < 0 || choice > 5) {
                 throw invalid_argument("incorrect_user_choice");
@@ -69,4 +71,9 @@ int getProgramChoice() {
             userInputError(e);
         }
     }
+}
+
+void getUserFilePath(wstring* filePath, int& mode) {
+    /* Получает путь до файла пользователя */
+    wstring
 }

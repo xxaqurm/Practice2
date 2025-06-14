@@ -12,6 +12,17 @@ enum class Tasks {
     Equation
 };
 
+enum class FilePathMode {
+    TextFilePath,
+    EncryptedFilePath,
+    DecryptedFilePath
+};
+
+enum class UserMenu {
+    MainMenu,
+    ShamirMenu
+};
+
 void showUserMenu();
 void userInputError(const exception& e);
 void clearScreen();
