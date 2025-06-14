@@ -1,33 +1,50 @@
-#include "math_utils.h"
+#include <tuple>
+#include <cmath>
+#include <gmpxx.h>
+#include "math_utils.hpp"
 
-int find_gcd(int a, int b) {
+using namespace std;
+
+bool is_prime(mpz_class a) {
+    /* Проверяет число на простоту */
+    mpz_class numSqrt;
+    mpz_sqrt(numSqrt.get_mpz_t(), a.get_mpz_t());
+    for (mpz_class i = 2; i <= numSqrt; i++) {
+        if (a % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+mpz_class find_gcd(mpz_class a, mpz_class b) {
     /* Находит НОД(a, b) */
     while (b != 0) {
-        int prevB = b;
+        mpz_class prevB = b;
         b = a % b;
         a = prevB;
     }
     return a;
 }
 
-tuple<int, int, int> extended_gcd(int a, int b) {
+tuple<mpz_class, mpz_class, mpz_class> extended_gcd(mpz_class a, mpz_class b) {
     /* находит d в выражении (c * d) mod m = 1 */
     if (b == 0) {
         return {a, 1, 0};
     }
 
-    int gcd, u1, v1;
+    mpz_class gcd, u1, v1;
     tie(gcd, u1, v1) = extended_gcd(b, a % b);
 
-    int u = v1;
-    int v = u1 - (a / b) * v1;
+    mpz_class u = v1;
+    mpz_class v = u1 - (a / b) * v1;
 
     return {gcd, u, v};
 }
 
-int mod_inverse(int c, int m) {
+mpz_class mod_inverse(mpz_class c, mpz_class m) {
     /* Находит обратный элемент к "c" по модолю "m" */
-    int gcd, u, v;
+    mpz_class gcd, u, v;
     tie(gcd, u, v) = extended_gcd(c, m);
 
     if (u < 0) {

@@ -4,23 +4,27 @@
 #include <limits>
 #include <tuple>
 #include <cmath>
+#include <gmpxx.h>
+
+#include "math_utils.hpp"
+#include "algorithms.hpp"
 
 using namespace std;
 
-tuple<int, int, int> extendedGcd(int a, int b) {  // <gcd, u, v>
+tuple<mpz_class, mpz_class, mpz_class> extendedGcd(mpz_class a, mpz_class b) {  // <gcd, u, v>
     /* Находит НОД(a, b), а также u, v для уравнеения au + bv = НОД(a, b) */
     if (b == 0) {
         return {a, 1, 0};
     }
 
-    int gcd, x1, y1;
+    mpz_class gcd, x1, y1;
     tie(gcd, x1, y1) = extendedGcd(b, a % b);
     return {gcd, y1, x1 - (a / b) * y1}; 
 }
 
-void solveDiophantine(int a, int b, int d, int& x, int& y) {
+void solveDiophantine(mpz_class a, mpz_class b, mpz_class d, mpz_class& x, mpz_class& y) {
     /* Находит x, y для уравнения вида ax + by = d */
-    int gcd, x0, y0;
+    mpz_class gcd, x0, y0;
     tie(gcd, x0, y0) = extendedGcd(abs(a), abs(b));
     
     if (d % gcd != 0) {
@@ -35,43 +39,43 @@ void solveDiophantine(int a, int b, int d, int& x, int& y) {
     if (b < 0) y = -y;
 }
 
-vector<int> continuedFraction(int a, int b) {
+vector<mpz_class> continuedFraction(mpz_class a, mpz_class b) {
     /* Ищет цепную дробь для рационального числа a / b */
-    vector<int> cf;
+    vector<mpz_class> cf;
     while (b != 0) {
         cf.push_back(a / b);
-        int quotient = a % b;
+        mpz_class quotient = a % b;
         a = b;
         b = quotient;
     }
     return cf;
 }
 
-void printContinuedFraction(vector<int> cf) {
+void printContinuedFraction(vector<mpz_class> cf) {
     /* Выводит цепную дробь */
-    wcout << L"[";
+    cout << "[";
     for (size_t i = 0; i < cf.size(); i++) {
-        wcout << cf[i];
-        if (i == 0 && cf.size() > 0) wcout << L"; ";
-        else if (i < cf.size() - 1) wcout << L", ";
+        cout << cf[i];
+        if (i == 0 && cf.size() > 0) cout << "; ";
+        else if (i < cf.size() - 1) cout << ", ";
     }
-    wcout << L"]" << endl;
+    cout << "]" << endl;
 }
 
 void solve_dioph() {
-    int a = 275, b = 145, d = 10;
-    int x = 0, y = 0;
+    mpz_class a = 275, b = 145, d = 10;
+    mpz_class x = 0, y = 0;
 
     try {
         solveDiophantine(a, b, d, x, y);
-        wcout << L"Решение уравнения: " << a << L"*x + " << b << L"*y = " << d << ":\n";
-        wcout << L"x = " << x << L"\ny = " << y << endl;
+        cout << "Решение уравнения: " << a << "*x + " << b << "*y = " << d << ":\n";
+        cout << "x = " << x << "\ny = " << y << endl;
     } catch(const exception& e) {
-        wcout << L"Ошибка: " << e.what();
+        cout << "Ошибка: " << e.what();
     }
 
-    wcout << L"\nЦепная дробь для " << a << L" / " << b << L":" << endl;
-    vector<int> contFraction = continuedFraction(a, b);
+    cout << "\nЦепная дробь для " << a << " / " << b << ":" << endl;
+    vector<mpz_class> contFraction = continuedFraction(a, b);
     printContinuedFraction(contFraction);
-    wcout << endl;
+    cout << endl;
 }
