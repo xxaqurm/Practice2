@@ -22,7 +22,7 @@ void simulateMitMAttack(ShareMatrix& es, int sharesToCorrupt) {
             break;
 
         if (!group.empty()) {
-            group[0].second += 1;  // Искажаем первую долю: y -> y + 1
+            group[0].second += 1;  // искажаем долю: y -> y + 1
             corruptedCount++;
         }
     }

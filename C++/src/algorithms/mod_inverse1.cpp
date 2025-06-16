@@ -33,9 +33,6 @@ void mod_inverse1() {
         }
     }
 
-    // cin.clear();
-    // cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
     mpz_class d = 0;
     d = mod_inverse(c, m);
 
