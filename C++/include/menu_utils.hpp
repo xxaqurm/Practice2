@@ -12,7 +12,8 @@ enum class Tasks {
     Euclid_uv,
     Euclid,
     Shamir,
-    Diophantine
+    Diophantine,
+    AttackSimulations
 };
 
 enum class UserMenu {
@@ -22,6 +23,7 @@ enum class UserMenu {
     ModInverse2Menu,
     ShamirMenu,
     DiophantineMenu,
+    AttackSimulations,
     MainMenu
 };
 

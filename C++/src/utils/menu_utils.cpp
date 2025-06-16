@@ -8,6 +8,7 @@
 #include "menu_utils.hpp"
 #include "math_utils.hpp"
 #include "algorithms.hpp"
+#include "mitm_attack.hpp"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ void showUserMenu(int mode) {
             cout << "3. Находит значение c выражения c^(-1) mod m = d" << endl;
             cout << "4. Шифрует вашу строку при помощи алгоритма Шамира" << endl;
             cout << "5. Реашет уравнение 275a + 145b = 10, а также находит цепную дробь выражения 275 / 145" << endl;
+            cout << "6. Демонстрация эмуляции атаки на алгоритм Шамира" << endl;
             cout << "Выберите одну из задач: ";
             break;
         case UserMenu::ModExpMenu:
@@ -38,6 +40,9 @@ void showUserMenu(int mode) {
             cout << "Введите путь до шифруемого файла: ";
             break;
         case UserMenu::DiophantineMenu:
+            break;
+        case UserMenu::AttackSimulations:
+            cout << "Симуляция атаки MitM на алгоритм Шамира: " << endl;
             break;
         case UserMenu::ExitMenu:
             break;
@@ -80,6 +85,9 @@ void executeTask(Tasks task, int mode) {
         case Tasks::Diophantine:
             solve_dioph();
             break;
+        case Tasks::AttackSimulations:
+            mitmDemo();
+            break;
         default:
             cout << "Something wrong" << endl;
             break;
@@ -90,14 +98,14 @@ int getProgramChoice() {
     /* Считывание программы на выполнение */
     string inputError = "Ошибка ввода. Пожалуйста, введите целое число.\n";
     string rangeError = "Ошибка диапазона. Пожалуйста, введите число от 0 до 5\n";
-    int menuMode = 6;
+    int menuMode = 7;
     
     while (true) {
         showUserMenu(menuMode);
         int userChoice = 0;
         try {
             cin >> userChoice;
-            if (userChoice < 0 || userChoice > 5) {
+            if (userChoice < 0 || userChoice > 6) {
                 throw invalid_argument("incorrect_user_choice");
             }
             cin.clear();

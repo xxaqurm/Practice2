@@ -37,6 +37,7 @@ set(SOURCES
     ${SOURCE_DIR}/algorithms/modexp.cpp
     ${SOURCE_DIR}/algorithms/shamir.cpp
     ${SOURCE_DIR}/algorithms/solveDiophantine.cpp
+    ${SOURCE_DIR}/algorithms/attackSimulations.cpp
 )
 
 # Создание исполняемого файла

@@ -27,10 +27,7 @@ mpz_class evalPolynomial(const vector<mpz_class>& coeffs, const mpz_class& x, co
     return result;
 }
 
-ShareGroup shamirSplit(const mpz_class& secret, int n, int k, const mpz_class& p) {
-    gmp_randclass rng(gmp_randinit_mt);
-    rng.seed(time(nullptr));
-
+ShareGroup shamirSplit(const mpz_class& secret, int n, int k, const mpz_class& p, gmp_randclass& rng) {
     vector<mpz_class> coeffs(k);
     coeffs[0] = secret;
     for (int i = 1; i < k; ++i) {
@@ -44,6 +41,21 @@ ShareGroup shamirSplit(const mpz_class& secret, int n, int k, const mpz_class& p
         shares.emplace_back(x, y);
     }
     return shares;
+}
+
+mpz_class bytesToMpz(const vector<unsigned char>& bytes) {
+    mpz_class result = 0;
+    for (unsigned char byte : bytes) {
+        result <<= 8;
+        result += byte;
+    }
+    return result;
+}
+
+vector<unsigned char> mpzToBytes(mpz_class val, size_t byteCount) {
+    vector<unsigned char> bytes(byteCount, 0);
+    mpz_export(bytes.data(), nullptr, 1, 1, 1, 0, val.get_mpz_t());
+    return bytes;
 }
 
 mpz_class lagrangeInterpolation(const ShareGroup& points, const mpz_class& x, const mpz_class& p) {
@@ -120,14 +132,20 @@ void encrypt(const string& fp, const string& efp, const int& n, const int& k, Sh
     ifstream file(fp, ios::binary);
     if (!file) throw runtime_error("Ошибка открытия исходного файла.");
 
-    string fileText((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-
-    ofstream out(efp, ios::binary);
+    ofstream out(efp);
     if (!out) throw runtime_error("Ошибка открытия файла шифрования.");
 
-    for (unsigned char ch : fileText) {
-        mpz_class secret(ch);
-        ShareGroup shares = shamirSplit(secret, n, k, PRIME);
+    gmp_randclass rng(gmp_randinit_mt);
+    rng.seed(time(nullptr));
+
+    const size_t blockSize = 4;
+    vector<unsigned char> buffer(blockSize);
+
+    while (file.read(reinterpret_cast<char*>(buffer.data()), blockSize) || file.gcount() > 0) {
+        buffer.resize(file.gcount());
+        mpz_class secret = bytesToMpz(buffer);
+
+        ShareGroup shares = shamirSplit(secret, n, k, PRIME, rng);
         es.push_back(shares);
 
         for (const auto& [x, y] : shares) {
@@ -137,32 +155,30 @@ void encrypt(const string& fp, const string& efp, const int& n, const int& k, Sh
     }
 }
 
-void decrypt(const string& ec, const string& dfp, const int& n, const int& userK, const ShareMatrix& es) {
+void decrypt(const string& dfp, const int& userK, const ShareMatrix& es) {
     ofstream out(dfp, ios::binary);
     if (!out) throw runtime_error("Ошибка открытия файла для расшифровки.");
 
-    for (size_t i = 0; i < es.size(); i++) {
-        ShareGroup part(es[i].begin(), es[i].begin() + userK);
+    for (const auto& group : es) {
+        ShareGroup part(group.begin(), group.begin() + userK);
         mpz_class secret = lagrangeInterpolation(part, 0, PRIME);
-        char ch = static_cast<char>(secret.get_si());
-        out.put(ch);
+
+        vector<unsigned char> bytes = mpzToBytes(secret, 4); // 4 байта
+        out.write(reinterpret_cast<char*>(bytes.data()), bytes.size());
     }
 }
 
 void shamir() {
-    string filePath;
-    string encryptedFilePath;
-    string decryptedFilePath;
-
+    string filePath, encryptedFilePath, decryptedFilePath;
     createEncDecFiles(filePath, encryptedFilePath, decryptedFilePath);
 
     int n = 0, k = 0, userK = 0;
     readShamirParameters(n, k, userK);
 
     ShareMatrix encryptionShares;
-
     encrypt(filePath, encryptedFilePath, n, k, encryptionShares);
-    decrypt(encryptedFilePath, decryptedFilePath, n, userK, encryptionShares);
+    decrypt(decryptedFilePath, userK, encryptionShares);
 
     cout << endl;
 }
+
