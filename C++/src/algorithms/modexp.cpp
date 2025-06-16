@@ -5,6 +5,8 @@
 #include <gmpxx.h>
 
 #include "math_utils.hpp"
+#include "menu_utils.hpp"
+#include "algorithms.hpp"
 
 using namespace std;
 
@@ -23,30 +25,28 @@ mpz_class fermat_mod(mpz_class a, mpz_class x, mpz_class p) {
 }
 
 void modexp() {
+    cin.exceptions(ios::failbit);
+
     mpz_class a = 0;
     mpz_class x = 0;
     mpz_class p = 0;
     
-    cout << "Введите свои a, x, p (пример ввода: a x p): ";
-
-    cin.exceptions(ios::failbit);
-    
+    string inputError = "Ошибка ввода. Пожалуйста, введите 3 целых чисела.";
+    string invalidP = "Некорректное p. Пожалуйста, введите простое p.";
     while (true) {
         try {
             cin >> a >> x >> p;
             if (!is_prime(p)) {
-                throw runtime_error("p должно быть простым. Попробуйте еще раз: ");
+                throw invalid_argument("ivalid_p");
             }
             break;
         } catch (const ios_base::failure& e) {
-            cout << "Ошибка (" << e.what() << "). Введите 2 целых числа: ";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            userInputError(e, inputError);
         } catch (const exception& e) {
-            cout << L"Ошибка. " << e.what();
+            userInputError(e, invalidP);
         }
     }
 
     mpz_class mod_result = fermat_mod(a, x, p);
-    cout << "a^x mod p = " << mod_result << endl << endl;
+    cout << a << "^" << x << " mod " << "p = " << mod_result << endl << endl;
 }

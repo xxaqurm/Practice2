@@ -12,26 +12,21 @@ using namespace std;
 
 int main() {
     locale::global(locale(""));
-    wcin.imbue(locale());
-    wcout.imbue(locale());
+    cin.imbue(locale());
+    cout.imbue(locale());
 
-    wcin.exceptions(ios::failbit);
+    cin.exceptions(ios::failbit);
 
     bool exitProgram = false;
     while (!exitProgram) {
         int programNumber = getProgramChoice();
         clearScreen();
 
+        executeTask(static_cast<Tasks>(programNumber), programNumber);
+
         if (programNumber == 0) {
             exitProgram = true;
             continue;
         }
-
-        executeTask(static_cast<Tasks>(programNumber));
-
-        wcin.clear();
-        wcin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-
-    wcout << L"Программа завершена!" << endl;
 }

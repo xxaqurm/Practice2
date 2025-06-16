@@ -1,6 +1,9 @@
 #include <iostream>
 #include <limits>
 #include <fstream>
+#include <tuple>
+
+#include <string>
 
 #include "menu_utils.hpp"
 #include "math_utils.hpp"
@@ -8,23 +11,47 @@
 
 using namespace std;
 
-void showUserMenu(int& mode) {
+void showUserMenu(int mode) {
     /* Выводит пользовательское меню */
-    
-    cout << "Выбирите одну из следующих програм:" << endl;
-    cout << "0. Выход из программы" << endl;
-    cout << "1. Находит значение выражения a^x mod p" << endl;
-    cout << "2. Находит значение d выражения (c*d) mod m (через u v)" << endl;
-    cout << "3. Находит значение c выражения c^(-1) mod m = d" << endl;
-    cout << "4. Шифрует вашу строку при помощи алгоритма Шамира" << endl;
-    cout << "5. Реашет уравнение 275a + 145b = 10, а также находит цепную дробь выражения 275 / 145" << endl;
-    cout << "Выберите одну из задач: ";
+    UserMenu menuMode = static_cast<UserMenu>(mode);
+    switch (menuMode) {
+        case UserMenu::MainMenu:
+            cout << "Выбирите одну из следующих програм:" << endl;
+            cout << "0. Выход из программы" << endl;
+            cout << "1. Находит значение выражения a^x mod p" << endl;
+            cout << "2. Находит значение d выражения (c*d) mod m (через u v)" << endl;
+            cout << "3. Находит значение c выражения c^(-1) mod m = d" << endl;
+            cout << "4. Шифрует вашу строку при помощи алгоритма Шамира" << endl;
+            cout << "5. Реашет уравнение 275a + 145b = 10, а также находит цепную дробь выражения 275 / 145" << endl;
+            cout << "Выберите одну из задач: ";
+            break;
+        case UserMenu::ModExpMenu:
+            cout << "Введите свои a, x, p (где p - простое): ";
+            break;
+        case UserMenu::ModInverse1Menu:
+            cout << "Введите свои c и m для выражения c*d mod m = 1: ";
+            break;
+        case UserMenu::ModInverse2Menu:
+            cout << "Введите свои c и m для выражения c^(-1) mod m = d: ";
+            break;
+        case UserMenu::ShamirMenu:
+            cout << "Введите путь до шифруемого файла: ";
+            break;
+        case UserMenu::DiophantineMenu:
+            break;
+        case UserMenu::ExitMenu:
+            break;
+    }
 }
 
-void userInputError(const exception& e, string& errorText) {
+void userInputError(const exception& e, const string& errorText) {
+    /* Выводим ошибку ввода */
     cout << ">>> Ошибка (" << e.what() << "): " << errorText << endl;
+    
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    cout << "Попробуйте еще раз: ";
 }
 
 void clearScreen() {
@@ -32,11 +59,12 @@ void clearScreen() {
     system("clear");
 }
 
-void executeTask(Tasks task) {
+void executeTask(Tasks task, int mode) {
     /* Запуск выбранной программы */
+    showUserMenu(mode);
     switch (task) {
-        case Tasks::ExitProgram: 
-            return;
+        case Tasks::ExitProgram:
+            break;
         case Tasks::Fermat:
             modexp();
             break;
@@ -49,6 +77,9 @@ void executeTask(Tasks task) {
         case Tasks::Shamir:
             shamir();
             break;
+        case Tasks::Diophantine:
+            solve_dioph();
+            break;
         default:
             cout << "Something wrong" << endl;
             break;
@@ -56,24 +87,26 @@ void executeTask(Tasks task) {
 }
 
 int getProgramChoice() {
-    /* Выбор программы */
-    int choice = 0;
+    /* Считывание программы на выполнение */
+    string inputError = "Ошибка ввода. Пожалуйста, введите целое число.\n";
+    string rangeError = "Ошибка диапазона. Пожалуйста, введите число от 0 до 5\n";
+    int menuMode = 6;
+    
     while (true) {
+        showUserMenu(menuMode);
+        int userChoice = 0;
         try {
-            showUserMenu();
-            cin >> choice;
-
-            if (choice < 0 || choice > 5) {
+            cin >> userChoice;
+            if (userChoice < 0 || userChoice > 5) {
                 throw invalid_argument("incorrect_user_choice");
             }
-            return choice;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return userChoice;
+        } catch (const ios::failure& e) {
+            userInputError(e, inputError);
         } catch (const exception& e) {
-            userInputError(e);
+            userInputError(e, rangeError);
         }
     }
-}
-
-void getUserFilePath(wstring* filePath, int& mode) {
-    /* Получает путь до файла пользователя */
-    wstring
 }

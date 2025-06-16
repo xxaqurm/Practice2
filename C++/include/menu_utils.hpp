@@ -1,6 +1,9 @@
 #pragma once
 
 #include <stdexcept>
+#include <string>
+#include <tuple>
+
 using namespace std;
 
 enum class Tasks {
@@ -9,22 +12,22 @@ enum class Tasks {
     Euclid_uv,
     Euclid,
     Shamir,
-    Equation
-};
-
-enum class FilePathMode {
-    TextFilePath,
-    EncryptedFilePath,
-    DecryptedFilePath
+    Diophantine
 };
 
 enum class UserMenu {
-    MainMenu,
-    ShamirMenu
+    ExitMenu,
+    ModExpMenu,
+    ModInverse1Menu,
+    ModInverse2Menu,
+    ShamirMenu,
+    DiophantineMenu,
+    MainMenu
 };
 
-void showUserMenu();
-void userInputError(const exception& e);
+void showUserMenu(int mode);
+void userInputError(const exception& e, const string& errorText);
 void clearScreen();
-void executeTask(Tasks task);
+void executeTask(Tasks modeTask, int mode);
+
 int getProgramChoice();
