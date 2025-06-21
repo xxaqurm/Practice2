@@ -15,8 +15,8 @@ void mod_inverse1();
 void mod_inverse2();
 void shamir();
 void solve_dioph();
-void encrypt(const string& fp, const string& efp, const int& n, const int& k, ShareMatrix& es);
-void decrypt(const string& dfp, const int& userK, const ShareMatrix& es);
+void encrypt(string fp, string efp, int n, int k, ShareMatrix& es);
+void decrypt(string dfp, int userK, ShareMatrix es);
 void createEncDecFiles(string& fp, string& encryptedFilePath, string& decryptedFilePath);
 void readShamirParameters(int& n, int& k, int& userK);
 

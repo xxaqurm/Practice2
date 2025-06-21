@@ -5,6 +5,7 @@
 #include <vector>
 #include <tuple>
 #include <ctime>
+#include <cstdint>
 
 #include "algorithms.hpp"
 #include "math_utils.hpp"
@@ -16,7 +17,7 @@ typedef pair<mpz_class, mpz_class> Share;
 typedef vector<Share> ShareGroup;
 typedef vector<ShareGroup> ShareMatrix;
 
-const mpz_class PRIME = 3974982375989;
+const mpz_class PRIME = generateRandomPrime(40);
 
 mpz_class evalPolynomial(const vector<mpz_class>& coeffs, const mpz_class& x, const mpz_class& p) {
     mpz_class result = 0, powX = 1;
@@ -85,7 +86,7 @@ void createEncDecFiles(string& fp, string& encryptedFilePath, string& decryptedF
     while (true) {
         try {
             getline(cin, fp);
-            ifstream file(fp);
+            ifstream file(fp, ios::binary);
             if (!file)
                 throw invalid_argument("invalid_file_path");
             break;
@@ -100,8 +101,8 @@ void createEncDecFiles(string& fp, string& encryptedFilePath, string& decryptedF
     encryptedFilePath = basePath + "encrypted.txt";
     decryptedFilePath = basePath + "decrypted.txt";
 
-    ofstream encryptedFile(encryptedFilePath);
-    ofstream decryptedFile(decryptedFilePath);
+    ofstream encryptedFile(encryptedFilePath, ios::binary);
+    ofstream decryptedFile(decryptedFilePath, ios::binary);
 
     cout << "Файл будет зашифрован по пути: " << encryptedFilePath << endl;
     cout << "Файл будет расшифрован по пути: " << decryptedFilePath << endl;
@@ -128,11 +129,11 @@ void readShamirParameters(int& n, int& k, int& userK) {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-void encrypt(const string& fp, const string& efp, const int& n, const int& k, ShareMatrix& es) {
+void encrypt(string fp, string efp, int n, int k, ShareMatrix& es) {
     ifstream file(fp, ios::binary);
     if (!file) throw runtime_error("Ошибка открытия исходного файла.");
 
-    ofstream out(efp);
+    ofstream out(efp, ios::binary);
     if (!out) throw runtime_error("Ошибка открытия файла шифрования.");
 
     gmp_randclass rng(gmp_randinit_mt);
@@ -149,13 +150,21 @@ void encrypt(const string& fp, const string& efp, const int& n, const int& k, Sh
         es.push_back(shares);
 
         for (const auto& [x, y] : shares) {
-            out << x << " " << y << " ";
+            vector<unsigned char> x_bytes = mpzToBytes(x, (mpz_sizeinbase(x.get_mpz_t(), 2) + 7) / 8);
+            uint32_t x_len = x_bytes.size();
+            out.write(reinterpret_cast<char*>(&x_len), sizeof(x_len));
+            out.write(reinterpret_cast<char*>(x_bytes.data()), x_bytes.size());
+            
+            vector<unsigned char> y_bytes = mpzToBytes(y, (mpz_sizeinbase(y.get_mpz_t(), 2) + 7) / 8);
+            uint32_t y_len = y_bytes.size();
+            out.write(reinterpret_cast<char*>(&y_len), sizeof(y_len));
+            out.write(reinterpret_cast<char*>(y_bytes.data()), y_bytes.size());
         }
-        out << "\n";
+        out.put('\n');
     }
 }
 
-void decrypt(const string& dfp, const int& userK, const ShareMatrix& es) {
+void decrypt(string dfp, int userK, ShareMatrix es) {
     ofstream out(dfp, ios::binary);
     if (!out) throw runtime_error("Ошибка открытия файла для расшифровки.");
 
@@ -178,7 +187,6 @@ void shamir() {
     ShareMatrix encryptionShares;
     encrypt(filePath, encryptedFilePath, n, k, encryptionShares);
     decrypt(decryptedFilePath, userK, encryptionShares);
-
     cout << endl;
 }
 

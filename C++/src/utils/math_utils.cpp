@@ -1,5 +1,6 @@
 #include <tuple>
 #include <cmath>
+#include <ctime>
 #include <gmpxx.h>
 #include "math_utils.hpp"
 
@@ -52,3 +53,67 @@ mpz_class mod_inverse(mpz_class c, mpz_class m) {
     }
     return u;
 }
+
+mpz_class modexp(mpz_class a, mpz_class x, mpz_class m) {
+    /* Модульное возведение в степень */
+    mpz_class res = 1;
+    mpz_class base = a % m;
+    while (x > 0) {
+        if (x % 2 == 1) {
+            res = (res * base) % m;
+        }
+        base = (base * base) % m;
+        x /= 2;
+    }
+    return res;
+}
+
+bool millerTest(const mpz_class& n, int t, gmp_randclass& rng) {
+    if (n == 2 || n == 3) return true;
+    if (n < 2 || n % 2 == 0) return false;
+
+    mpz_class d = n - 1;
+    int s = 0;
+    while (d % 2 == 0) {
+        d /= 2;
+        s++;
+    }
+
+    for (int i = 0; i < t; i++) {
+        mpz_class a = rng.get_z_range(n - 3) + 2; // [2, n-2]
+
+        mpz_class x = modexp(a, d, n);
+
+        if (x == 1 || x == n - 1) continue;
+
+        bool continueLoop = false;
+        for (int r = 1; r < s; r++) {
+            x = (x  * x) % n;
+            if (x == n - 1) {
+                continueLoop = true;
+                break;
+            }
+        }
+
+        if (!continueLoop) return false;
+    }
+
+    return true;
+}
+
+mpz_class generateRandomPrime(int bitLength, int testRounds) {
+    gmp_randclass rng(gmp_randinit_mt);
+    rng.seed(time(nullptr));
+
+    mpz_class candidate;
+    while (true) {
+        candidate = rng.get_z_bits(bitLength);
+        mpz_setbit(candidate.get_mpz_t(), bitLength - 1); // Устанавливаем старший бит (обеспечивает нужную длину)
+        mpz_setbit(candidate.get_mpz_t(), 0);             // Делаем нечётным
+
+        if (millerTest(candidate, testRounds, rng)) {
+            return candidate;
+        }
+    }
+}
+
