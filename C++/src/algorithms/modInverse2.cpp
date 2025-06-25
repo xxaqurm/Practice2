@@ -3,14 +3,13 @@
 #include <limits>
 #include <tuple>
 
-#include "math_utils.hpp"
-#include "menu_utils.hpp"
+#include "mathUtils.hpp"
+#include "menuUtils.hpp"
 #include "algorithms.hpp"
 
 using namespace std;
 
-void mod_inverse2() {
-    /* c * d = 1 (mod m) */
+void modInverse2() {
     mpz_class c = 0, m = 0;
 
     string inputError = "Введите 2 целых числа";
@@ -20,7 +19,7 @@ void mod_inverse2() {
             cin >> c >> m;
             if (m < 1) {
                 throw invalid_argument("invalid_argument");
-            } else if (find_gcd(c, m) != 1) {
+            } else if (findGcd(c, m) != 1) {
                 throw invalid_argument("invalid_gcd(c, m)");
             }
             break;
@@ -31,6 +30,10 @@ void mod_inverse2() {
         }
     }
 
-    mpz_class d = mod_inverse(c, m);
+    mpz_class d = 0, u = 0, v = 0, gcd = 1;
+    tie(gcd, u, v) = extendedEuclid(c, m);
+
+    d = (u % m + m) % m;
+
     cout << c << "^(-1) mod " << m << " = " << d << endl << endl;
 }

@@ -10,14 +10,15 @@ typedef pair<mpz_class, mpz_class> Share;
 typedef vector<Share> ShareGroup;
 typedef vector<ShareGroup> ShareMatrix;
 
-void modexp();
-void mod_inverse1();
-void mod_inverse2();
+void exponentiationModulo();
+void modInverse1();
+void modInverse2();
 void shamir();
-void solve_dioph();
+void solveDioph();
+void mitmDemo();
+void simulateMitMAttack(ShareMatrix& es, int sharesToCorrupt = 1);
+
 void encrypt(string fp, string efp, int n, int k, ShareMatrix& es);
 void decrypt(string dfp, int userK, ShareMatrix es);
 void createEncDecFiles(string& fp, string& encryptedFilePath, string& decryptedFilePath);
 void readShamirParameters(int& n, int& k, int& userK);
-
-mpz_class fermat_mod(mpz_class a, mpz_class x, mpz_class p);

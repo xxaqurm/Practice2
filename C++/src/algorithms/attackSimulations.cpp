@@ -1,11 +1,11 @@
-#include "mitm_attack.hpp" // твоя внешняя атака
-#include "math_utils.hpp"
-#include "menu_utils.hpp"
-#include "algorithms.hpp" // если тут encrypt, decrypt
 #include <fstream>
 #include <iostream>
 #include <limits>
 #include <string>
+
+#include "mathUtils.hpp"
+#include "menuUtils.hpp"
+#include "algorithms.hpp"
 
 using namespace std;
 

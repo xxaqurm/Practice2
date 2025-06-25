@@ -6,25 +6,15 @@
 #include <cmath>
 #include <gmpxx.h>
 
-#include "math_utils.hpp"
-#include "menu_utils.hpp"
+#include "mathUtils.hpp"
+#include "menuUtils.hpp"
 #include "algorithms.hpp"
 
 using namespace std;
 
-mpz_class my_gcd(mpz_class a, mpz_class b) {
-    /* Находит НОД(a, b) */
-    while (b != 0) {
-        mpz_class remains = a % b;
-        a = b;
-        b = remains;
-    }
-    return a;
-}
-
 void solveDiophantine(mpz_class a, mpz_class b, mpz_class c, mpz_class& x, mpz_class& y, vector<mpz_class>& chainFractions) {
     /* Находит x, y для уравнения вида ax + by = d */
-    mpz_class gcd = my_gcd(my_gcd(a, b), c);
+    mpz_class gcd = findGcd(findGcd(a, b), c);
     mpz_class finalCoeff = c / gcd;
 
     a /= gcd;
@@ -58,7 +48,7 @@ void solveDiophantine(mpz_class a, mpz_class b, mpz_class c, mpz_class& x, mpz_c
     y = pow(-1, termCount) * finalDenominator * finalCoeff;
 }
 
-void solve_dioph() {
+void solveDioph() {
     mpz_class a = 275, b = 145, d = 10;
     mpz_class x = 0, y = 0;
 

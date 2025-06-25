@@ -8,8 +8,8 @@
 #include <cstdint>
 
 #include "algorithms.hpp"
-#include "math_utils.hpp"
-#include "menu_utils.hpp"
+#include "mathUtils.hpp"
+#include "menuUtils.hpp"
 
 using namespace std;
 

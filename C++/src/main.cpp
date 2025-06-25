@@ -3,30 +3,23 @@
 #include <locale>
 #include <gmpxx.h>
 
-#include "algorithms.hpp"
-#include "math_utils.hpp"
-#include "menu_utils.hpp"
-#include "mitm_attack.hpp"
+#include "menuUtils.hpp"
 
 using namespace std;
 
-int main() {
-    locale::global(locale(""));
-    cin.imbue(locale());
-    cout.imbue(locale());
-
+int main(void) {
     cin.exceptions(ios::failbit);
-
-    bool exitProgram = false;
-    while (!exitProgram) {
-        int programNumber = getProgramChoice();
+    clearScreen();
+    while (true) {
+        Program program = getProgramChoice(MenuMode::StartMenu);
         clearScreen();
 
-        executeTask(static_cast<Tasks>(programNumber), programNumber);
+        MenuMode mode = static_cast<MenuMode>(program);
+        executeTask(program, mode);
 
-        if (programNumber == 0) {
-            exitProgram = true;
-            continue;
+        if (program == Program::ExitProgram) {
+            clearScreen();
+            return 0;
         }
     }
 }

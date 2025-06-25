@@ -4,13 +4,13 @@
 #include <tuple>
 #include <gmpxx.h>
 
-#include "math_utils.hpp"
-#include "menu_utils.hpp"
+#include "mathUtils.hpp"
+#include "menuUtils.hpp"
 #include "algorithms.hpp"
 
 using namespace std;
 
-void mod_inverse1() {
+void modInverse1() {
     mpz_class c = 0, m = 0;
     
     cin.exceptions(ios::failbit);
@@ -22,7 +22,7 @@ void mod_inverse1() {
             cin >> c >> m;
             if (m < 1) {
                 throw invalid_argument("invalid_m");
-            } else if (find_gcd(c, m) != 1) {
+            } else if (findGcd(c, m) != 1) {
                 throw invalid_argument("invalid_gcd(c,m)");
             }
             break;
@@ -33,8 +33,10 @@ void mod_inverse1() {
         }
     }
 
-    mpz_class d = 0;
-    d = mod_inverse(c, m);
+    mpz_class d = 0, u = 0, v = 0, gcd = 1;
+    tie(gcd, u, v) = extendedEuclid(c, m);
+
+    d = (u % m + m) % m;
 
     cout << c << "*d mod " << m << " = 1" << endl;
     cout << "d = " << d << endl << endl;
