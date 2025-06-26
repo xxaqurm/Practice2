@@ -28,10 +28,10 @@ void showUserMenu(MenuMode mode) {
         case MenuMode::ExponentiationModuloMenu:
             cout << "Введите свои a, x, p (где p - простое): ";
             break;
-        case MenuMode::ExtendedEuclidMenu:
+        case MenuMode::ModInverse1Menu:
             cout << "Введите свои c и m для выражения c*d mod m = 1: ";
             break;
-        case MenuMode::BasicEuclidMenu:
+        case MenuMode::ModInverse2Menu:
             cout << "Введите свои c и m для выражения c^(-1) mod m = d: ";
             break;
         case MenuMode::ShamirEncryptionMenu:

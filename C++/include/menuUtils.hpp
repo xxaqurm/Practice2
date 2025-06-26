@@ -19,8 +19,8 @@ enum class Program {
 enum class MenuMode {
     StartMenu,
     ExponentiationModuloMenu,
-    ExtendedEuclidMenu,
-    BasicEuclidMenu,
+    ModInverse1Menu,
+    ModInverse2Menu,
     ShamirEncryptionMenu,
     DiophantineMenu,
     AttackSimulationsMenu,

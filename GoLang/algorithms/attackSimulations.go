@@ -31,7 +31,6 @@ func MitmDemo() {
 		break
 	}
 
-	// Ввод k (минимальное количество долей для восстановления)
 	var k int
 	for {
 		fmt.Print("Введите минимальное количество долей для расшифровки (k): ")
@@ -44,7 +43,7 @@ func MitmDemo() {
 	}
 	userK := k
 
-	fmt.Print("Введите количество долей, которые хотите изменить (для атаки MitM): ")
+	fmt.Print("Введите количество символов, которые хотите изменить (для атаки MitM): ")
 	var sharesToCorrupt int
 	_, err = fmt.Scanf("%d\n", &sharesToCorrupt)
 	if err != nil || sharesToCorrupt < 1 {
@@ -52,17 +51,13 @@ func MitmDemo() {
 		return
 	}
 
-	// Шифруем
 	shares := splitSecret(content, n, k)
 
-	// Атака MitM
 	SimulateMitMAttack(shares, sharesToCorrupt)
 
-	// Дешифруем с подменёнными долями
 	dir := filepath.Dir(inputPath)
 	recovered := reconstructSecret(shares[:userK])
 
-	// Сохраняем результат
 	err = os.WriteFile(filepath.Join(dir, "mitm_decrypted.txt"), recovered, 0644)
 	if err != nil {
 		fmt.Println("Ошибка записи файла mitm_decrypted.txt:", err)

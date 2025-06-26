@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const prime = 7919 // Простое число > 255
+const prime = 7919
 
 type Share struct {
 	X int
@@ -182,7 +182,6 @@ func Shamir() {
 		break
 	}
 
-	// Ввод k (минимальное количество долей для восстановления)
 	var k int
 	for {
 		fmt.Print("Введите минимальное количество долей для расшифровки (k): ")
@@ -194,7 +193,6 @@ func Shamir() {
 		break
 	}
 
-	// Шифрование
 	shares := splitSecret(content, n, k)
 	dir := filepath.Dir(inputPath)
 	err = writeEncrypted(dir, shares)
@@ -204,7 +202,6 @@ func Shamir() {
 	}
 	fmt.Println("Файл encrypted.txt успешно создан.")
 
-	// Дешифрование
 	readShares, err := readEncrypted(dir, k)
 	if err != nil {
 		fmt.Println("Ошибка при чтении encrypted.txt:", err)
@@ -221,17 +218,17 @@ func Shamir() {
 }
 
 func SimulateMitMAttack(shares []Share, sharesToCorrupt int) {
-	fmt.Println("\n[!] MitM: Симулируется атака «человек посередине»...")
+	fmt.Println("\n[!] MitM: Симулируется атака MitM")
 
 	corrupted := 0
 	for i := 0; i < len(shares) && corrupted < sharesToCorrupt; i++ {
 		if len(shares[i].Y) > 0 {
-			for j := 0; j < len(shares[i].Y); j++ { // искажаем все байты доли
+			for j := 0; j < len(shares[i].Y) && corrupted < sharesToCorrupt; j++ {
 				shares[i].Y[j] = (shares[i].Y[j] + 1) % prime
+				corrupted++
 			}
-			corrupted++
 		}
 	}
 
-	fmt.Printf("[!] MitM: %d доля(и) были изменены.\n", corrupted)
+	fmt.Printf("[!] MitM: %d долей были изменены.\n", corrupted)
 }
